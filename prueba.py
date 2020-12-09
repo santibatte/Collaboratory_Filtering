@@ -10,8 +10,8 @@ import numpy as np
 import numpy.ma as ma
 
 
-links = pd.read_csv("C:/Users/joser/Documents/maestria/ml/Collaboratory_Filtering/links_small.csv")
-ratings = pd.read_csv("C:/Users/joser/Documents/maestria/ml/Collaboratory_Filtering/ratings_small.csv")
+links = pd.read_csv("links_small.csv")
+ratings = pd.read_csv("ratings_small.csv")
 
 
 
@@ -37,7 +37,7 @@ ratings_features = np.array(ratings_wide.columns)
 
 def CostFunction(Y,U,V,lambd=.02):
     
-    cost = np.linalg.norm(np.nan_to_num(Y-U@V),"fro")**2
+    cost = .5*np.linalg.norm(np.nan_to_num(Y-U@V),"fro")**2
     
     reg = .5*lambd*np.linalg.norm(U)+.5*lambd*np.linalg.norm(V)
     
@@ -45,11 +45,11 @@ def CostFunction(Y,U,V,lambd=.02):
     
     
 def dCostFunction_dU(Y,U,V,lambd=.02):
-    return -2*(np.nan_to_num(Y-U@V))@V.T+lambd*U
+    return -(np.nan_to_num(Y-U@V))@V.T+lambd*U
 
     
 def dCostFunction_dV(Y,U,V,lambd=.02):
-    return -2*U.T@(np.nan_to_num(Y-U@V))+lambd*V
+    return -U.T@(np.nan_to_num(Y-U@V))+lambd*V
 
 
 
@@ -65,14 +65,14 @@ def CollaborativeFiltering(Y,max_iter=10,k=2,eta=.0002,lambd=.02):
         j,z = 0,0
         
         Uold = U
-        while ((j <= max_iter) or np.linalg.norm(U-Uold)<=.001):
+        while ((j <= max_iter) or np.linalg.norm(U-Uold)>=.001):
             Uold=U
             U = U-eta*dCostFunction_dU(Y,U,V,lambd)
             print(np.linalg.norm(U-Uold))
             j+=1
          
         Vold = V
-        while  ((z <= max_iter) or np.linalg.norm(V-Vold)<=.001):
+        while  ((z <= max_iter) or np.linalg.norm(V-Vold)>=.001):
             Vold = V
             V = V-eta*dCostFunction_dV(Y,U,V,lambd)
             print(np.linalg.norm(V-Vold))
@@ -86,7 +86,7 @@ def CollaborativeFiltering(Y,max_iter=10,k=2,eta=.0002,lambd=.02):
 Y=ratings_values
 
 
-U,V = CollaborativeFiltering(Y,max_iter=100,k=2,eta=.000002,lambd=2)
+U,V = CollaborativeFiltering(Y,max_iter=100,k=2,eta=.02,lambd=2)
 
 
 
