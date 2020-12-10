@@ -45,15 +45,15 @@ def CostFunction(Y,U,V,lambd=.02):
     
     
 def dCostFunction_dU(Y,U,V,lambd=.02):
-    return -(np.nan_to_num(Y-U@V))@V.T+lambd*U
+    return -((Y-U@V))@V.T+lambd*U
 
     
 def dCostFunction_dV(Y,U,V,lambd=.02):
-    return -U.T@(np.nan_to_num(Y-U@V))+lambd*V
+    return -U.T@((Y-U@V))+lambd*V
 
 #http://ethen8181.github.io/machine-learning/recsys/1_ALSWR.html
 
-def CollaborativeFiltering(Y,max_iter=10,k=2,eta=.0002,lambd=.02):
+def CollaborativeFiltering(Y,max_iter=10,k=2,eta=.0002,lambd=10):
     
     m,n = Y.shape
     
@@ -65,18 +65,19 @@ def CollaborativeFiltering(Y,max_iter=10,k=2,eta=.0002,lambd=.02):
         j,z = 0,0
         
         Uold = U
-        while ((j <= max_iter) or np.linalg.norm(U-Uold)>=.001):
+       #
+       while ((j <= max_iter) or np.linalg.norm(U-Uold)>=.001):
             Uold=U
             U = U-eta*dCostFunction_dU(Y,U,V,lambd)
             print(np.linalg.norm(U-Uold))
             j+=1
          
-        Vold = V
-        while  ((z <= max_iter) or np.linalg.norm(V-Vold)>=.001):
+            #Vold = V
+        #while  ((z <= max_iter) or np.linalg.norm(V-Vold)>=.001):
             Vold = V
             V = V-eta*dCostFunction_dV(Y,U,V,lambd)
-            print(np.linalg.norm(V-Vold))
-            z+=1
+            #print(np.linalg.norm(V-Vold))
+            #z+=1
     
         i+=1
     return U,V
@@ -86,7 +87,7 @@ def CollaborativeFiltering(Y,max_iter=10,k=2,eta=.0002,lambd=.02):
 Y=ratings_values
 
 
-U,V = CollaborativeFiltering(Y,max_iter=100,k=2,eta=.02,lambd=2)
+U,V = CollaborativeFiltering(Y,max_iter=100,k=2,eta=.00005,lambd=15)
 
 
 ###################
@@ -144,10 +145,13 @@ def CollaborativeFiltering_2(Y,max_iter=1000,k=2,lambd=10):
 
 Y = ratings_values
 
+result=CollaborativeFiltering_2(Y,max_iter=1000,k=int(2),lambd=10)
+
+
 ngrid=200
 
-x1_grid = np.arange(1,100)
-x2_grid = np.linspace(1,20)
+x1_grid = np.arange(1,100,1)
+x2_grid = np.arange(1,20)
 X1, X2 = np.meshgrid(x1_grid, x2_grid)
 
 positions = np.vstack([X1.ravel(), X2.ravel()]).T
