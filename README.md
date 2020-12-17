@@ -27,4 +27,4 @@ para 100 usuarios distintos. El algoritmo puede tardar unos minutos en ejecutar.
 
 La última celda, contiene una función llamada Recomendar(). Esta función considera una matríz de recomendación para los 100 usuarios y las 9,000 películas de la base de datos.
 Al ejecutar esta función (sin argumentos), se desplegará un cuadro de texto, en el cual debe introducirse el número de usuario (número entero del 1 al 100). Al dar enter, 
-se desplegarán las 5 películas recomendads, con su título, fecha de lanzamiento y una breve sinópsis en inglés. Para hacer una nueva consulta, debe ejecutarse la función nuevamente.
+se desplegarán las 5 películas recomendadas, con su título, fecha de lanzamiento y una breve sinópsis en inglés. Para hacer una nueva consulta, debe ejecutarse la función nuevamente.
